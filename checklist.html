@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Senior design leadership skills</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg-primary: #ffffff;
+    --bg-secondary: #f5f4f0;
+    --text-primary: #1a1a18;
+    --text-secondary: #5f5e5a;
+    --text-tertiary: #9c9a92;
+    --border-light: rgba(0,0,0,0.1);
+    --border-medium: rgba(0,0,0,0.2);
+    --border-strong: rgba(0,0,0,0.35);
+    --radius-sm: 6px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --font: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg-primary: #1c1c1a;
+      --bg-secondary: #252523;
+      --text-primary: #e8e6de;
+      --text-secondary: #9c9a92;
+      --text-tertiary: #666460;
+      --border-light: rgba(255,255,255,0.08);
+      --border-medium: rgba(255,255,255,0.15);
+      --border-strong: rgba(255,255,255,0.3);
+    }
+  }
+
+  body {
+    font-family: var(--font);
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    padding: 32px 24px 64px;
+    max-width: 720px;
+    margin: 0 auto;
+    line-height: 1.5;
+  }
+
+  h1 {
+    font-size: 18px;
+    font-weight: 500;
+    margin-bottom: 6px;
+  }
+
+  .intro {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-bottom: 24px;
+  }
+
+  .toolbar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+  }
+
+  .filter-btn {
+    font-size: 12px;
+    font-family: var(--font);
+    padding: 5px 12px;
+    border-radius: 20px;
+    border: 1px solid var(--border-medium);
+    background: var(--bg-secondary);
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .filter-btn:hover {
+    border-color: var(--border-strong);
+    color: var(--text-primary);
+  }
+
+  .filter-btn.active {
+    background: var(--text-primary);
+    color: var(--bg-primary);
+    border-color: var(--text-primary);
+  }
+
+  .selected-count {
+    font-size: 12px;
+    color: var(--text-tertiary);
+    margin-left: auto;
+  }
+
+  .category {
+    margin-bottom: 28px;
+  }
+
+  .cat-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+
+  .cat-dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .cat-title {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-primary);
+  }
+
+  .cat-count {
+    font-size: 11px;
+    color: var(--text-tertiary);
+  }
+
+  .skills-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .skill {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-light);
+    background: var(--bg-secondary);
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s;
+  }
+
+  .skill:hover {
+    border-color: var(--border-medium);
+  }
+
+  .skill.selected {
+    border-color: var(--border-strong);
+    background: var(--bg-primary);
+  }
+
+  .skill-check {
+    width: 16px;
+    height: 16px;
+    border-radius: 4px;
+    border: 1.5px solid var(--border-medium);
+    flex-shrink: 0;
+    margin-top: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s, border-color 0.15s;
+  }
+
+  .skill.selected .skill-check {
+    background: var(--text-primary);
+    border-color: var(--text-primary);
+  }
+
+  .check-icon { display: none; }
+  .skill.selected .check-icon { display: block; }
+
+  .skill-content { flex: 1; }
+
+  .skill-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 2px;
+  }
+
+  .skill-name {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-primary);
+    line-height: 1.4;
+  }
+
+  .skill-level {
+    font-size: 10px;
+    font-weight: 500;
+    padding: 2px 6px;
+    border-radius: 4px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .level-Director  { background: #EEEDFE; color: #3C3489; }
+  .level-Staff     { background: #E1F5EE; color: #085041; }
+  .level-Senior    { background: #FAEEDA; color: #633806; }
+
+  @media (prefers-color-scheme: dark) {
+    .level-Director { background: #26215C; color: #AFA9EC; }
+    .level-Staff    { background: #04342C; color: #5DCAA5; }
+    .level-Senior   { background: #412402; color: #EF9F27; }
+  }
+
+  .skill-desc {
+    font-size: 12px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+
+  .empty {
+    font-size: 13px;
+    color: var(--text-tertiary);
+    padding: 12px 0;
+  }
+</style>
+</head>
+<body>
+
+<h1>Senior design leadership skills</h1>
+<p class="intro">Use when building case studies to identify which skills a project demonstrates. Level tags indicate where a skill reads most powerfully, not where it's exclusive to.</p>
+
+<div class="toolbar">
+  <button class="filter-btn active" data-filter="all">All</button>
+  <button class="filter-btn" data-filter="Director">Director</button>
+  <button class="filter-btn" data-filter="Staff">Staff / Lead IC</button>
+  <button class="filter-btn" data-filter="Senior">Senior IC</button>
+  <span class="selected-count" id="sel-count">0 selected</span>
+</div>
+
+<div id="skill-list"></div>
+
+<script>
+const categories = [
+  {
+    name: "Strategic diagnosis",
+    color: "#534AB7",
+    skills: [
+      { name: "Problem reframing", level: "Director", desc: "Identifying that the stated problem isn't the real one, and redirecting the team." },
+      { name: "Root cause diagnosis", level: "Director", desc: "Distinguishing symptoms from causes — especially when others have already misread the situation." },
+      { name: "Structural mismatch detection", level: "Director", desc: "Recognizing when the real issue is a system or org design problem, not a UX or product problem." },
+      { name: "Turning a vague business desire into a concrete problem statement", level: "Director", desc: "Translating fuzzy organizational intent into a scoped, solvable design problem." },
+      { name: "Knowing when not to build", level: "Staff", desc: "Using research to kill scope or deprioritize, rather than justify a solution." },
+    ]
+  },
+  {
+    name: "Decision-making under constraint",
+    color: "#0F6E56",
+    skills: [
+      { name: "Non-obvious prioritization", level: "Director", desc: "Making a call that someone else in the room would have made differently — and being right." },
+      { name: "Minimum viable experience definition", level: "Staff", desc: "Identifying what 'good enough to ship' actually means, not just what's fast or what's ideal." },
+      { name: "Principled deprioritization", level: "Staff", desc: "Rigorous investigation that ends in a reasoned decision to redirect rather than a shipped solution." },
+      { name: "Timeline-constrained decision-making", level: "Senior", desc: "Navigating impossible deadlines by defining what must be true versus what can wait." },
+      { name: "Scope reduction with preserved intent", level: "Senior", desc: "Cutting scope without destroying the core experience — holding the line on what matters." },
+    ]
+  },
+  {
+    name: "Stakeholder influence",
+    color: "#993C1D",
+    skills: [
+      { name: "Bringing strategic recommendations to leadership", level: "Director", desc: "Forming a point of view about what the team should do and presenting it with conviction." },
+      { name: "Changing what the team works on", level: "Director", desc: "Influencing the roadmap or backlog through design insight, not just executing what's already there." },
+      { name: "Holding a position under pressure", level: "Staff", desc: "Maintaining a design direction or recommendation against skepticism or competing priorities." },
+      { name: "Cross-functional alignment", level: "Staff", desc: "Getting product, engineering, and business stakeholders to shared understanding — especially when they're misaligned." },
+      { name: "Catching a flawed assumption early", level: "Senior", desc: "Identifying a wrong direction before the team commits — in a brief, pitch, or conversation." },
+    ]
+  },
+  {
+    name: "Systems thinking",
+    color: "#185FA5",
+    skills: [
+      { name: "Seeing interconnected factors", level: "Director", desc: "Understanding how a decision in one area will affect another — product, team, business, or user." },
+      { name: "Capability transfer / democratization", level: "Director", desc: "Building tools, systems, or infrastructure that let others move without depending on you." },
+      { name: "Design scaffolding for non-designers", level: "Director", desc: "Creating structure that allows stakeholders to operate independently — scaling your influence without scaling headcount." },
+      { name: "Recognizing when a tool has a higher-order use", level: "Staff", desc: "Building something for one purpose and having the clarity to see it solves a different, more important problem." },
+      { name: "Design system strategy", level: "Staff", desc: "Shaping how a design system evolves to serve both current needs and future scale." },
+    ]
+  },
+  {
+    name: "User and research thinking",
+    color: "#854F0B",
+    skills: [
+      { name: "Proxy research under access constraints", level: "Staff", desc: "Generating valid insight when you can't reach users directly — through indirect methods, analogous data, or behavioral signals." },
+      { name: "Behavioral diagnosis over self-reported data", level: "Staff", desc: "Reading what users do rather than what they say, especially when the two conflict." },
+      { name: "Cognitive load management at scale", level: "Senior", desc: "Designing for environments with overwhelming information density — managing what users must hold in their heads." },
+      { name: "Trust architecture for imperfect systems", level: "Staff", desc: "Designing layered verification and correction patterns for AI or automated outputs users can't fully rely on." },
+      { name: "Building confidence through progressive disclosure", level: "Senior", desc: "Sequencing information or interaction so users build trust before facing complexity." },
+    ]
+  },
+  {
+    name: "Craft and execution at senior level",
+    color: "#3B6D11",
+    skills: [
+      { name: "Owning major experience decisions", level: "Senior", desc: "Being the person who makes the calls on core UX — not just executing what others defined." },
+      { name: "Catching a flawed interaction pattern", level: "Senior", desc: "Seeing a navigation conflict, a mental model mismatch, or a broken affordance others missed." },
+      { name: "End-to-end design from pitch to ship", level: "Senior", desc: "Owning a product from prototype through MVP — not handing off at any stage." },
+      { name: "Prototyping beyond Figma's capability", level: "Staff", desc: "Using code-based tools to validate complex logic, interaction, or data behavior that can't be tested statically." },
+      { name: "Designing for unfamiliar domains", level: "Senior", desc: "Getting up to speed on a new industry, workflow, or user type fast enough to make valid design decisions." },
+    ]
+  },
+  {
+    name: "Organizational and team influence",
+    color: "#993556",
+    skills: [
+      { name: "Diagnosing a systems or process failure misread as a people problem", level: "Director", desc: "Recognizing when a team, workflow, or timeline issue has a structural cause — not an execution one." },
+      { name: "Defining design's role in an organization", level: "Director", desc: "Shaping how design is understood, used, and valued by the broader org — not just doing the work." },
+      { name: "Mentorship through case study or artifact", level: "Staff", desc: "Creating tools, questionnaires, or frameworks that transfer your design judgment to others." },
+      { name: "Building a design culture without a team", level: "Staff", desc: "Influencing how the org thinks about design when you're the only designer in the room." },
+    ]
+  },
+  {
+    name: "Communication and narrative",
+    color: "#5F5E5A",
+    skills: [
+      { name: "Framing outcomes in business language", level: "Senior", desc: "Translating design decisions into terms that resonate with product, exec, and client audiences." },
+      { name: "Making invisible work visible", level: "Senior", desc: "Articulating the thinking behind a decision — not just the output." },
+      { name: "Diagnostic storytelling", level: "Staff", desc: "Leading a case study with the problem reframe, not the process — showing how you changed what was being worked on." },
+      { name: "Confident ownership language", level: "Senior", desc: "Narrating your work as someone who owns outcomes, not fills a role." },
+    ]
+  }
+];
+
+let currentFilter = 'all';
+const selected = new Set();
+
+function render() {
+  const list = document.getElementById('skill-list');
+  list.innerHTML = '';
+
+  categories.forEach(cat => {
+    const filtered = cat.skills.filter(s =>
+      currentFilter === 'all' || s.level === currentFilter
+    );
+    if (!filtered.length) return;
+
+    const div = document.createElement('div');
+    div.className = 'category';
+    div.innerHTML = `
+      <div class="cat-header">
+        <div class="cat-dot" style="background:${cat.color}"></div>
+        <span class="cat-title">${cat.name}</span>
+        <span class="cat-count">${filtered.length} skill${filtered.length !== 1 ? 's' : ''}</span>
+      </div>
+      <div class="skills-grid">
+        ${filtered.map(s => {
+          const id = `${cat.name}||${s.name}`;
+          const isSel = selected.has(id);
+          return `
+            <div class="skill${isSel ? ' selected' : ''}" data-id="${id.replace(/"/g, '&quot;')}">
+              <div class="skill-check">
+                <svg class="check-icon" width="10" height="8" viewBox="0 0 10 8" fill="none">
+                  <path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              <div class="skill-content">
+                <div class="skill-header">
+                  <span class="skill-name">${s.name}</span>
+                  <span class="skill-level level-${s.level}">${s.level}</span>
+                </div>
+                <div class="skill-desc">${s.desc}</div>
+              </div>
+            </div>`;
+        }).join('')}
+      </div>`;
+    list.appendChild(div);
+  });
+
+  updateCount();
+}
+
+function updateCount() {
+  const n = selected.size;
+  document.getElementById('sel-count').textContent =
+    n === 0 ? '0 selected' : `${n} selected`;
+}
+
+document.getElementById('skill-list').addEventListener('click', e => {
+  const skillEl = e.target.closest('.skill');
+  if (!skillEl) return;
+  const id = skillEl.dataset.id;
+  if (selected.has(id)) selected.delete(id);
+  else selected.add(id);
+  render();
+});
+
+document.querySelector('.toolbar').addEventListener('click', e => {
+  const btn = e.target.closest('.filter-btn');
+  if (!btn) return;
+  currentFilter = btn.dataset.filter;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  render();
+});
+
+render();
+</script>
+</body>
+</html>
